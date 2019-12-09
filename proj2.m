@@ -29,17 +29,17 @@ if gaussian
 
             %MAP:
             obj = @(a) -((sum((1+y)/2))*log(1-phi(-a/sigma)) + (sum((1-y)/2)) * log(phi(-a/sigma)) -a^2/((2*sigma)^2));
-            %[A_map, fval] = fminunc(obj, 0, options);
+            [A_map, fval] = fminunc(obj, 0, options);
             
             MSE1 = MSE1 + (A-A_mle)^2;
             MSE2 = MSE2 + (A-A_map)^2;
         end
-        Ey = 1*(1-phi(-A/sigma)) + (-1) * (phi(-A\sigma));
+        Ey = 1*(1-phi(-A/sigma)) + (-1) * (phi(-A/sigma));
         
         
         
         
-        %ratio = A/sigma
+        ratio = A/sigma
         mses = [mses; MSE1];
         MSE1 = MSE1/200;
         MSE2 = MSE2/200;
@@ -48,9 +48,10 @@ if gaussian
     end
     figure(1)
     loglog([0.1:0.1:10], vals1)
-    figure(2)
-    %loglog([0.1:0.1:10], vals2)
-    loglog([0.1:0.1:10], mses)
+    hold on;
+    %figure(2)
+    loglog([0.1:0.1:10], vals2)
+    %loglog([0.1:0.1:10], mses)
 
 
 end
@@ -79,8 +80,8 @@ if uniform
             A_mle = (sqrt(3)*sigma * sum(y))/n;
             
             %MAP:
-            %obj = @(a) -((sum((1+y)/2))*log(1-((-a+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + (sum((1-y)/2))* log(((-a+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + log(-a+sqrt(3)*sigma) - log(2*sqrt(3)*sigma));
-            obj = @(a) -((sum((1+y)/2))*log(1-((-a+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + (sum((1-y)/2))* log(((-a+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + log(-a+sqrt(3)*sigma));
+            obj = @(a) -((sum((1+y)/2))*log(1-((-a+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + ...
+                (sum((1-y)/2))* log(((-a+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + log(-a+sqrt(3)*sigma) - log(2*sqrt(3)*sigma));
 
             [A_map, fval] = fminunc(obj, 0, options);
             
@@ -94,7 +95,7 @@ if uniform
         CRLB = CRLB/n;
         ratio = A/sigma
         MSE1 = MSE1/200;
-        %MSE2 = MSE2/200;
+        MSE2 = MSE2/200;
         vals1 = [vals1; MSE1];
         vals2 = [vals2; MSE2];
         vals3 = [vals3; CRLB];
