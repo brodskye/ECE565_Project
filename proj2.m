@@ -11,12 +11,12 @@ if gaussian
 
     mses = [];
     
-    A_vec=exp(linspace(log(1),log(100),10));
-    for i=1:length(A_vec)
+    %A_vec=exp(linspace(log(1),log(100),10));
+    for i=1:100
         MSE1=0; %for MLE
         MSE2=0; %for MAP
-         A = A_vec(i);
-         R=20000;
+        A=i;
+        R=200;
         for j=1:R
             %
             % rng('default');
@@ -24,7 +24,7 @@ if gaussian
             n=5000;
             sigma=10;
             y = sign(repmat(A,n,1)+ normrnd(0,sigma,[n,1]));
-%qq(j)=sum(y);
+            %qq(j)=sum(y);
             %MLE:
             if (1/n) * sum((y)) == 1
                 A_mle = -sigma * sqrt(2)*erfinv(-.9999999);
@@ -36,16 +36,12 @@ if gaussian
 
             %MAP:
             obj = @(a) -((sum((1+y)/2))*log(1-PHI(-a/sigma)) + (sum((1-y)/2)) * log(PHI(-a/sigma)) -a^2/((2*sigma)^2));
-            %[A_map, fval] = fminunc(obj, 0, options);
+            [A_map, fval] = fminunc(obj, 0, options);
             
             MSE1 = MSE1 + (A-A_mle)^2;
-            %MSE2 = MSE2 + (A-A_map)^2;
+            MSE2 = MSE2 + (A-A_map)^2;
         end
- %       hist(qq),pause
-        Ey = 1*(1-PHI(-A/sigma)) + (-1) * (PHI(-A/sigma));
-        %FIM = ((sum((1-Ey)/2))*(PHI(-A/sigma)*(1/sigma^2)*phip(-A/sigma) - (1/sigma^2)*phi(-A/sigma)^2)/(PHI(-A/sigma)^2)) - ...
-            %((sum((1+Ey)/2))*(1-PHI(-A/sigma)*(1/sigma^2)*phip(-A/sigma) - (1/sigma^2)*phi(-A/sigma)^2)/(1-PHI(-A/sigma)^2))
-        
+        %hist(qq),pause
         FIM = (1/(sigma^2))*(phi(-A/sigma))^2 * (1/((PHI(-A/sigma)*(1-PHI(-A/sigma)))));
         CRLB = 1/FIM;
         CRLB = CRLB/n;
@@ -59,11 +55,11 @@ if gaussian
         
     end
     figure(1)
-    loglog(A_vec/sigma, vals1)
+    loglog([0.1:0.1:10], vals1)
     hold on;
     %figure(2)
-    loglog(A_vec/sigma, vals2)
-    loglog(A_vec/sigma, vals3)
+    loglog([0.1:0.1:10], vals2)
+    loglog([0.1:0.1:10], vals3)
 
     %loglog([0.1:0.1:10], mses)
 
