@@ -2,6 +2,7 @@
 
 
 \DeclareMathOperator\erf{erf}
+\DeclareMathOperator\erfinv{erfinv}
 \begin{document}
 
 \begin{equation}
@@ -144,6 +145,10 @@ A_{MAP} = \max_{A} \left( \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\log\left( \
 \end{equation}
 
 Again, we solve this using MATLAB's fminunc function
+
+\begin{equation}
+\Phi^{-1}(x) = \sqrt{2}\erfinv(2x-1)
+\end{equation}
 
 \end{document}
 
