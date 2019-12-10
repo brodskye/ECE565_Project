@@ -42,7 +42,8 @@ if gaussian
             MSE2 = MSE2 + (A-A_map)^2;
         end
         %hist(qq),pause
-        FIM = (1/(sigma^2))*(phi(-A/sigma))^2 * (1/((PHI(-A/sigma)*(1-PHI(-A/sigma)))));
+        %FIM = (1/(sigma^2))*(phi(-A/sigma))^2 * (1/((PHI(-A/sigma)*(1-PHI(-A/sigma)))));
+        FIM = ((1/(sigma^2))*(phi(-A/sigma))^2) / (((PHI(-A/sigma)*(1-PHI(-A/sigma)))));
         CRLB = 1/FIM;
         CRLB = CRLB/n;
         ratio = A/sigma
@@ -62,7 +63,10 @@ if gaussian
     loglog([0.1:0.1:10], vals3)
 
     %loglog([0.1:0.1:10], mses)
-
+    legend('MLE', 'MAP', 'CRLB')
+    xlabel('A/\sigma')
+    ylabel('MSE')
+    title('Gaussian Estimators and CRLB')
 
 end
 
@@ -101,7 +105,7 @@ if uniform
         %CRLB:
         Ey = 1*(1-((-A+sqrt(3)*sigma)/(2*sqrt(3)*sigma))) + (-1) * (((-A+sqrt(3)*sigma)/(2*sqrt(3)*sigma)));
         FIM = (-(-1*sum((1-Ey)/2)/((sqrt(3)*sigma-A)^2)) + sum((1+Ey)/2)/((sqrt(3)*sigma+A)^2));
-        CRLB = 1/FIM
+        CRLB = 1/FIM;
         CRLB = CRLB/n;
         ratio = A/sigma
         MSE1 = MSE1/200;
@@ -109,6 +113,7 @@ if uniform
         vals1 = [vals1; MSE1];
         vals2 = [vals2; MSE2];
         vals3 = [vals3; CRLB];
+
         %mses = [mses; MSE1];
     end
     figure(1)
@@ -120,6 +125,10 @@ if uniform
     loglog([0.1:0.1:10], vals3)
     %figure(2)
     %loglog([0.1:0.1:10], mses);
+    legend('MLE', 'MAP', 'CRLB')
+    xlabel('A/\sigma')
+    ylabel('MSE')
+    title('Uniform Estimators and CRLB')
 end
 
 function s = PHI(x)
