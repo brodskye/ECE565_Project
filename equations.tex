@@ -1,18 +1,154 @@
 \documentclass{amsart}
 
 
-
+\DeclareMathOperator\erf{erf}
 \begin{document}
 
 \begin{equation}
 \frac{d\log p(y_1, y_2, ..., y_n | A)}{dA} = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{\frac{d}{dA} \Phi(\frac{-A}{\sigma})}{\Phi(\frac{-A}{\sigma})} - \left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{d}{dA} \Phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})}
 \end{equation}
 
+Where
+
 \begin{equation}
-\frac{d\log p(y_1, y_2, ..., y_n | A)}{dA} = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{}{\Phi(\frac{-A}{\sigma})} - \left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{d}{dA} \Phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})}
+\Phi(x) = \frac{1}{2} + \frac{1}{2}\erf(\frac{x}{\sqrt{2}})
 \end{equation}
 
+And
+
+\begin{equation}
+ \erf(x) = \frac{2}{\sqrt{\pi}} \int_{0}^{x}e^{-t^{2}}\, dt
+\end{equation}
+
+Note that
+
+\begin{equation}
+\frac{d}{dA}\Phi(\frac{-A}{\sigma}) = \frac{-1}{\sigma} \phi(\frac{-A}{\sigma})
+\end{equation}
+
+Where
+
+\begin{equation}
+\phi(x) = \frac{e^\frac{-x^2}{2}}{\sqrt{2\pi}}
+\end{equation}
+
+So this becomes
+
+\begin{equation}
+\frac{d\log p(y_1, y_2, ..., y_n | A)}{dA} = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{\Phi(\frac{-A}{\sigma})} - \left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})}
+\end{equation}
+
+Setting the derivative to 0 and simplifying, we get
+
+\begin{equation}
+\left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right) \Phi(\frac{-A}{\sigma}) = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right) \left( 1-\Phi(\frac{-A}{\sigma}) \right)
+\end{equation}
+
+Further simplifying
+
+\begin{equation}
+\Phi(\frac{-A}{\sigma}) = \frac{1}{n}\sum_{i=1}^{n}\frac{1-y_i}{2}
+\end{equation}
+
+So
+\begin{equation}
+A_{MLE} = -\sigma\Phi^{-1}\left(\frac{1}{n}\sum_{i=1}^{n}\frac{1-y_i}{2}\right)
+\end{equation}
+
+
+\newpage
+Uniform Case:
+
+\begin{equation}
+\frac{d\log p(y_1, y_2, ..., y_n | A)}{dA} = \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\left( \frac{\sqrt{3}}{\sqrt{3}A + 3\sigma} \right) + \left(\sum_{i=1}^{n}\frac{1-y_i}{2}\right)\left( \frac{\sqrt{3}}{\sqrt{3}A - 3\sigma} \right)
+\end{equation}
+
+Setting the derivative to 0 and simplifying, we get
+
+\begin{equation}
+\sqrt{3}\sigma\left(\sum_{i=1}^{n}\frac{1+y_i}{2} - \sum_{i=1}^{n}\frac{1-y_i}{2}\right) = nA
+\end{equation}
+
+Which is the same as
+
+\begin{equation}
+\sqrt{3}\sigma\sum_{i=1}^{n}y_i = nA
+\end{equation}
+
+So
+
+\begin{equation}
+A_{MLE} = \frac{\sqrt{3}\sigma\sum_{i=1}^{n}y_i}{n} = \sqrt{3}\sigma\bar{y}
+\end{equation}
+
+\newpage
+
+Gaussian MAP
+
+By definition:
+
+\begin{equation}
+A_{MAP} = \max_{A} P(A|\underline{y}) = \max_{A}\frac{P(\underline{y}|A)P(A)}{P(\underline{y})}
+\end{equation}
+
+This is equivalent to 
+
+\begin{equation}
+A_{MAP} = \max_{A} \log P(A|\underline{y}) = \max_{A} \left( \log P(\underline{y}|A) + \log P(A) - \log P(\underline{y})\right)
+\end{equation}
+
+which is the same as 
+
+\begin{equation}
+A_{MAP} = \max_{A} \left( \log P(\underline{y}|A) + \log P(A)\right)
+\end{equation}
+
+In the Gaussian case, 
+
+\begin{equation}
+\log P(\underline{y}|A) = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right) \log(1-\Phi(\frac{-A}{\sigma})) + \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \log(\Phi(\frac{-A}{\sigma}))
+\end{equation}
+
+And
+
+\begin{equation}
+\log P(A) = \frac{-A^2}{2\sigma_{A}^2}
+\end{equation}
+
+So we define the MAP estimator as
+
+\begin{equation}
+A_{MAP} = \max_{A}\left( \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right) \log(1-\Phi(\frac{-A}{\sigma})) + \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \log(\Phi(\frac{-A}{\sigma})) + \frac{-A^2}{2\sigma_{A}^2} \right)
+\end{equation}
+
+We solve this using MATLAB's fminunc function.
+
+\newpage
+
+Uniform MAP
+
+Like in the Gaussian case, we define the conditional and marginal probabilities.
+
+\begin{equation}
+\log P(\underline{y}|A) = \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\log\left( \frac{1}{2} + \frac{A}{2\sqrt{3}\sigma} \right) + \left(\sum_{i=1}^{n}\frac{1-y_i}{2}\right)\log\left( \frac{1}{2} - \frac{A}{2\sqrt{3}\sigma} \right)
+\end{equation}
+
+\begin{equation}
+\log P(A) = \log(\frac{-A + \sqrt{3}\sigma}{2\sqrt{3}\sigma})
+\end{equation}
+
+Following the definition of MAP,
+
+\begin{equation}
+A_{MAP} = \max_{A} \left( \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\log\left( \frac{1}{2} + \frac{A}{2\sqrt{3}\sigma} \right) + \left(\sum_{i=1}^{n}\frac{1-y_i}{2}\right)\log\left( \frac{1}{2} - \frac{A}{2\sqrt{3}\sigma} \right) + \log(\frac{-A + \sqrt{3}\sigma}{2\sqrt{3}\sigma}) \right)
+\end{equation}
+
+Again, we solve this using MATLAB's fminunc function
+
 \end{document}
+
+
+
 
 %------------------------------------------------------------------------------
 % End of journal.tex
