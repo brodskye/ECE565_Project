@@ -2,22 +2,29 @@ options = optimoptions(@fminunc, 'Display','off');
 
 
 %Gaussian:
-gaussian = 0;
+gaussian = 1;
 
 if gaussian
     vals1 = []; %for MLE
     vals2 = []; %for MAP
+    vals3 = []; %for CRLB
+
     mses = [];
-    for i=1:100
+    
+    A_vec=exp(linspace(log(1),log(100),10));
+    for i=1:length(A_vec)
         MSE1=0; %for MLE
         MSE2=0; %for MAP
-        for j=1:200
-            rng('default');
-            A = i;
+         A = A_vec(i);
+         R=20000;
+        for j=1:R
+            %
+            % rng('default');
+           
             n=5000;
             sigma=10;
             y = sign(repmat(A,n,1)+ normrnd(0,sigma,[n,1]));
-
+%qq(j)=sum(y);
             %MLE:
             if (1/n) * sum((y)) == 1
                 A_mle = -sigma * sqrt(2)*erfinv(-.9999999);
@@ -28,29 +35,36 @@ if gaussian
             end
 
             %MAP:
-            obj = @(a) -((sum((1+y)/2))*log(1-phi(-a/sigma)) + (sum((1-y)/2)) * log(phi(-a/sigma)) -a^2/((2*sigma)^2));
-            [A_map, fval] = fminunc(obj, 0, options);
+            obj = @(a) -((sum((1+y)/2))*log(1-PHI(-a/sigma)) + (sum((1-y)/2)) * log(PHI(-a/sigma)) -a^2/((2*sigma)^2));
+            %[A_map, fval] = fminunc(obj, 0, options);
             
             MSE1 = MSE1 + (A-A_mle)^2;
-            MSE2 = MSE2 + (A-A_map)^2;
+            %MSE2 = MSE2 + (A-A_map)^2;
         end
-        Ey = 1*(1-phi(-A/sigma)) + (-1) * (phi(-A/sigma));
+ %       hist(qq),pause
+        Ey = 1*(1-PHI(-A/sigma)) + (-1) * (PHI(-A/sigma));
+        %FIM = ((sum((1-Ey)/2))*(PHI(-A/sigma)*(1/sigma^2)*phip(-A/sigma) - (1/sigma^2)*phi(-A/sigma)^2)/(PHI(-A/sigma)^2)) - ...
+            %((sum((1+Ey)/2))*(1-PHI(-A/sigma)*(1/sigma^2)*phip(-A/sigma) - (1/sigma^2)*phi(-A/sigma)^2)/(1-PHI(-A/sigma)^2))
         
-        
-        
-        
+        FIM = (1/(sigma^2))*(phi(-A/sigma))^2 * (1/((PHI(-A/sigma)*(1-PHI(-A/sigma)))));
+        CRLB = 1/FIM;
+        CRLB = CRLB/n;
         ratio = A/sigma
         mses = [mses; MSE1];
-        MSE1 = MSE1/200;
-        MSE2 = MSE2/200;
+        MSE1 = MSE1/R;
+        MSE2 = MSE2/R;
         vals1 = [vals1; MSE1];
         vals2 = [vals2; MSE2];
+        vals3 = [vals3; CRLB];
+        
     end
     figure(1)
-    loglog([0.1:0.1:10], vals1)
+    loglog(A_vec/sigma, vals1)
     hold on;
     %figure(2)
-    loglog([0.1:0.1:10], vals2)
+    loglog(A_vec/sigma, vals2)
+    loglog(A_vec/sigma, vals3)
+
     %loglog([0.1:0.1:10], mses)
 
 
@@ -58,7 +72,7 @@ end
 
 
 %Uniform:
-uniform = 1; 
+uniform = 0; 
 
 if uniform
     vals1 = []; %for MLE
@@ -112,6 +126,15 @@ if uniform
     %loglog([0.1:0.1:10], mses);
 end
 
-function s = phi(x)
+function s = PHI(x)
     s = 1/2 + 1/2 * erf(x/sqrt(2));
 end
+
+function s = phi(x)
+    s = (exp(-(x.^2)/2))/(sqrt(2*pi));
+end
+
+function s = phip(x)
+    s = (-x).*phi(x);
+end
+
