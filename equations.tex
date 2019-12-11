@@ -146,13 +146,103 @@ A_{MAP} = \max_{A} \left( \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\log\left( \
 
 Again, we solve this using MATLAB's fminunc function
 
+
+\newpage
+
+Deriving MLE (Uniform Case)
+
+\begin{equation}
+\log P(\underline{y}|A) = \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\log\left( \frac{1}{2} + \frac{A}{2\sqrt{3}\sigma} \right) + \left(\sum_{i=1}^{n}\frac{1-y_i}{2}\right)\log\left( \frac{1}{2} - \frac{A}{2\sqrt{3}\sigma} \right)
+\end{equation}
+
+\begin{equation}
+\frac{d\log p(\underline{y} | A)}{dA} = \left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\left( \frac{\sqrt{3}}{\sqrt{3}A + 3\sigma} \right) + \left(\sum_{i=1}^{n}\frac{1-y_i}{2}\right)\left( \frac{\sqrt{3}}{\sqrt{3}A - 3\sigma} \right)
+\end{equation}
+
+
+
+\begin{equation}
+0 = \frac{-\sum_{i=1}^{n} \frac{1-y_i}{2}}{-A+\sqrt{(3)\sigma}} + \frac{\sum_{i=1}^{n} \frac{1+y_i}{2}}{A+\sqrt{(3)\sigma}}
+\end{equation}
+
+\begin{equation}
+\frac{\sum_{i=1}^{n} \frac{1-y_i}{2}}{-A+\sqrt{(3)\sigma}} = \frac{\sum_{i=1}^{n} \frac{1+y_i}{2}}{A+\sqrt{(3)\sigma}}
+\end{equation}
+
+\begin{equation}
+(-A+\sqrt{3}\sigma)\sum_{i=1}^{n} \frac{1+y_i}{2} = (A+\sqrt{3}\sigma \sum_{i=1}^{n} \frac{1-y_i}{2})
+\end{equation}
+
+\begin{equation}
+\sqrt{3}\left(\sigma\sum_{i=1}^{n} \frac{1+y_i}{2} - \sum_{i=1}^{n} \frac{1-y_i}{2}\right) = nA
+\end{equation}
+
+\begin{equation}
+\sqrt{3}\sigma\sum_{i=1}^{n}y_i = nA
+\end{equation}
+
+\begin{equation}
+A_{MLE} = \frac{\sqrt{3}\sigma\sum_{i=1}^{n}y_i}{n} = \sqrt{3}\sigma\bar{y}
+\end{equation}
+
+\newpage
+
+
+
+Deriving MLE (Gaussian Case)
+
+\begin{equation}
+\log P(\underline{y}|A) = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right) \log(1-\Phi(\frac{-A}{\sigma})) + \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \log(\Phi(\frac{-A}{\sigma}))
+\end{equation}
+
+\begin{equation}
+\frac{d\log p(\underline{y} | A)}{dA} = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{\frac{d}{dA} \Phi(\frac{-A}{\sigma})}{\Phi(\frac{-A}{\sigma})} - \left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{d}{dA} \Phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})}
+\end{equation}
+
+\begin{equation}
+\frac{d\log p(y_1, y_2, ..., y_n | A)}{dA} = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{\Phi(\frac{-A}{\sigma})} - \left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})}
+\end{equation}
+
+\begin{equation}
+0 = \left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{\Phi(\frac{-A}{\sigma})} - \left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})}
+\end{equation}
+
+\begin{equation}
+\left( \sum_{i=1}^{n}\frac{1+y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{1-\Phi(\frac{-A}{\sigma})} = 
+\left( \sum_{i=1}^{n}\frac{1-y_i}{2} \right)  \frac{\frac{-1}{\sigma} \phi(\frac{-A}{\sigma})}{\Phi(\frac{-A}{\sigma})} 
+\end{equation}
+
+Cross multiplying, we get
+\begin{equation}
+\left(\sum_{i=1}^{n}\frac{1+y_i}{2}\right)\Phi(\frac{-A}{\sigma}) = \left(\sum_{i=1}^{n}\frac{1-y_i}{2}\right)\left(1-\Phi(\frac{-A}{\sigma})\right)
+\end{equation}
+
+\begin{equation}
+\sum_{i=1}^{n}\frac{1-y_i}{2} = \Phi(\frac{-A}{\sigma})\left(\sum_{i=1}^{n}\frac{1+y_i}{2} + \sum_{i=1}^{n}\frac{1-y_i}{2}\right)
+\end{equation}
+
+\begin{equation}
+\sum_{i=1}^{n}\frac{1-y_i}{2} = n\Phi(\frac{-A}{\sigma})
+\end{equation}
+
+\begin{equation}
+\Phi(\frac{-A}{\sigma})= \frac{1}{n}\sum_{i=1}^{n}\frac{1-y_i}{2}
+\end{equation}
+
+\begin{equation}
+A_{MLE} = -\sigma\Phi^{-1}\left(\frac{1}{n}\sum_{i=1}^{n}\frac{1-y_i}{2}\right)
+\end{equation}
+
+Where
+
 \begin{equation}
 \Phi^{-1}(x) = \sqrt{2}\erfinv(2x-1)
 \end{equation}
 
+
+\newpage
+
 \end{document}
-
-
 
 
 %------------------------------------------------------------------------------
