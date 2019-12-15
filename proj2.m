@@ -51,7 +51,11 @@ if gaussian
     hold on;
     loglog([0.1:0.1:10], vals2)
     loglog([0.1:0.1:10], vals3)
-
+    
+    legend('MLE', 'MAP', 'CRLB')
+    xlabel('A/\sigma')
+    ylabel('MSE')
+    title('Gaussian Estimators and CRLB')
 
 
 end
@@ -104,6 +108,11 @@ if uniform
     hold on;
     loglog([0.1:0.1:10], vals2)
     loglog([0.1:0.1:10], vals3)
+    
+    legend('MLE', 'MAP', 'CRLB')
+    xlabel('A/\sigma')
+    ylabel('MSE')
+    title('Uniform Estimators and CRLB')
 
 end
 
